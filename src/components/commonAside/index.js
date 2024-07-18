@@ -1,4 +1,6 @@
 import React from "react";
+import MenuConfig from '../../config'
+import * as Icon from '@ant-design/icons';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -11,6 +13,29 @@ import {Button, Layout, Menu, theme} from 'antd';
 
 const {Header, Sider, Content} = Layout;
 
+// 动态获取icon
+const iconToElement = (name) => React.createElement(Icon[name]);
+
+// 处理菜单的数据
+const items = MenuConfig.map((icon) => {
+    // 没有子菜单
+    const child =  {
+        key: icon.path,
+        icon: iconToElement(icon.icon),
+        label: icon.label,
+    }
+    // 有子菜单
+    if (icon.children) {
+        child.children = icon.children.map((item) => {
+            return {
+                key: item.path,
+                label: item.label,
+            }
+        })
+    }
+    return child
+})
+
 const CommonAside = () => {
     // const [collapsed, setCollapsed] = useState(false);
     return (
@@ -21,23 +46,7 @@ const CommonAside = () => {
                 theme="dark"
                 mode="inline"
                 defaultSelectedKeys={['1']}
-                items={[
-                    {
-                        key: '1',
-                        icon: <UserOutlined/>,
-                        label: 'nav 1',
-                    },
-                    {
-                        key: '2',
-                        icon: <VideoCameraOutlined/>,
-                        label: 'nav 2',
-                    },
-                    {
-                        key: '3',
-                        icon: <UploadOutlined/>,
-                        label: 'nav 3',
-                    },
-                ]}
+                items={items}
                 style={{
                     height: '100%'
                 }}
